@@ -72,21 +72,6 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               child: Text('run dart function'),
             ),
-            // RaisedButton(
-            //   onPressed: () async {
-            //     try {
-            //       data.progress = 0;
-            //       await AppClient.setInitialData(data);
-            //       setState(() {
-            //         _result = 'set data';
-            //       });
-            //     } on PlatformException catch (e, stacktrace) {
-            //       print(e);
-            //       print(stacktrace);
-            //     }
-            //   },
-            //   child: Text('set initial service data'),
-            // ),
             RaisedButton(
               onPressed: () async {
                 try {
@@ -99,18 +84,6 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               child: Text('get service data'),
             ),
-            // RaisedButton(
-            //   onPressed: () async {
-            //     try {
-            //       await AppClient.startService();
-            //       setState(() => _result = 'start service');
-            //     } on PlatformException catch (e, stacktrace) {
-            //       print(e);
-            //       print(stacktrace);
-            //     }
-            //   },
-            //   child: Text('start service'),
-            // ),
             RaisedButton(
               onPressed: () async {
                 try {
