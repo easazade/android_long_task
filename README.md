@@ -10,6 +10,8 @@ No & No & No. this is an IOS limitation and you must consider this before creati
 
   ## How does this plugin work?
 ![screenshot 1](diagram.jpg?raw=true "diagram")
+
+
 **TLDR**
 basically you should know that you should write the code you want to run in your ForegroundService in a different main function called **serviceMain**
 if you want to know exactly why read the rest.
