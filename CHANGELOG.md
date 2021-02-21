@@ -1,3 +1,7 @@
+## 0.3.3
+
+updating documentation
+
 ## 0.3.2
 
 updating documentation
