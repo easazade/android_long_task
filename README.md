@@ -79,10 +79,11 @@ class  SharedUploadData  extends  ServiceData {
 
 ## Step 2 : create serviceMain
 
-create a `serviceMain()` function in your `lib/main.dart` file. this is where you define the dart code that is going to run in your ForegroundService
+create a `serviceMain()` function in your `lib/main.dart` file. this is where you define the dart code that is going to run in your ForegroundService. make sure to annotate it with `@pragma('vm:entry-point')` otherwise it won't run in `release mode`
 
 ```dart
 //this entire function runs in your ForegroundService
+@pragma('vm:entry-point')
 serviceMain() async {
 	//make sure you add this
 	WidgetsFlutterBinding.ensureInitialized();
