@@ -9,9 +9,13 @@ Is there a plugin to run long running tasks in IOS background?
 No & No & No. this is an IOS limitation and you must consider this before creating your app and change your design or requirements if necessary
 
   ## How does this plugin work?
-![screenshot 1](diagram.jpg?raw=true "diagram")
-
-
+```mermaid
+graph LR
+A[<b>Flutter App</b> - main function<br> your entire app's flutter code is running here] --> B(Android Activity)
+R[<b>Service code</b> - serviceMain function<br> your dart that runs in your foreground service] --> C(Foreground Service)
+B --> D{connection}
+C --> D
+```
 **TLDR**
 basically you should know that you should write the code you want to run in your ForegroundService in a different main function called **serviceMain**
 if you want to know exactly why read the rest.
@@ -96,7 +100,7 @@ serviceMain() async {
 		await ServiceClient.update(serviceData);
 		//run some more code
 		serviceData.progress = 100;
-		await ServiceClient.update(serviceData);
+		await ServiceClient.endExecution(serviceData);
 		await ServiceClient.stopService();
 	});
 
@@ -105,7 +109,9 @@ serviceMain() async {
 
 **What is ServiceClient**
 service client is basically an interface to your ForegroundService. it providers methods like
-* `update(sharedDate)` which is used to update the shared data between you app dart-code and service-dart code.
+* `update(sharedData)` which is used to update the shared data between you app dart-code and service-dart code.
+
+* `endExecution(sharedData)` will end the execution of the call that was invoked when `AppClient.execute()` was called from application side and sends shared data as the return value of `AppClient.execute()`
 
 * `stopService()` which stops the service. note that you don't have to stop the ForegroundService if that is what you need.
 
@@ -136,4 +142,6 @@ await AppClient.execute(initialSharedData);
 # ToDo list
 
 * add options to customize ForegroundService Notification more
+
+
 

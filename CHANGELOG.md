@@ -1,3 +1,7 @@
+## 0.3.1
+
+adding feature to send result for method calls from application side
+
 ## 0.2.1
 
 adding documentation and minor changes
