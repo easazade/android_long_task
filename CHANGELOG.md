@@ -1,3 +1,7 @@
+## 0.3.2
+
+updating documentation
+
 ## 0.3.1
 
 adding feature to send result for method calls from application side

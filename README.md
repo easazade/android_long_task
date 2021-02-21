@@ -3,8 +3,11 @@
 android long task is a flutter plugin to run dart code in an android foreground service with simplicity
 
 Does it work on IOS as well?
+
 What About IOS?
+
 Is there a plugin to run long running tasks in IOS background?
+
 **Answer :**
 No & No & No. this is an IOS limitation and you must consider this before creating your app and change your design or requirements if necessary
 
