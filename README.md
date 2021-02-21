@@ -9,13 +9,9 @@ Is there a plugin to run long running tasks in IOS background?
 No & No & No. this is an IOS limitation and you must consider this before creating your app and change your design or requirements if necessary
 
   ## How does this plugin work?
-```mermaid
-graph LR
-A[<b>Flutter App</b> - main function<br> your entire app's flutter code is running here] --> B(Android Activity)
-R[<b>Service code</b> - serviceMain function<br> your dart that runs in your foreground service] --> C(Foreground Service)
-B --> D{connection}
-C --> D
-```
+
+![diagram](diagram.jpg?raw=true "digram")
+
 **TLDR**
 basically you should know that you should write the code you want to run in your ForegroundService in a different main function called **serviceMain**
 if you want to know exactly why read the rest.
