@@ -95,7 +95,9 @@ class AndroidLongTask(private val activity: FlutterActivity, private val binaryM
           Log.d("DART/NATIVE", call.arguments as String)
           if (appService != null) {
             appService!!.runDartFunction()
-            result.success("running service dart code")
+            appService!!.setMethodExecutionResultListener { jObject ->
+              result.success(jObject.toString())
+            }
           } else {
             result.error("SERVICE_NOT_STARTED", "can't execute dart code before starting service", "")
           }

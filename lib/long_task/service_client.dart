@@ -7,6 +7,7 @@ class ServiceClient {
   static const _CHANNEL_NAME = "APP_SERVICE_CHANNEL_NAME";
   static const _SET_SERVICE_DATA = 'SET_SERVICE_DATA';
   static const _STOP_SERVICE = 'stop_service';
+  static const _END_EXECUTION = 'END_EXECUTION';
   static var channel = MethodChannel(_CHANNEL_NAME);
 
   static Future<String> update(ServiceData data) async {
@@ -19,6 +20,11 @@ class ServiceClient {
       var json = jsonDecode(call.arguments as String);
       await action(json);
     });
+  }
+
+  static Future<void> endExecution(ServiceData data) async {
+    var dataWrapper = ServiceDataWrapper(data);
+    return channel.invokeMethod(_END_EXECUTION, dataWrapper.toJson());
   }
 
   static Future<String> stopService() => channel.invokeMethod(_STOP_SERVICE);

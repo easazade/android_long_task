@@ -63,8 +63,9 @@ class _MyHomePageState extends State<MyHomePage> {
             RaisedButton(
               onPressed: () async {
                 try {
-                  await AppClient.execute(data);
-                  setState(() => _result = 'executing service');
+                  var result = await AppClient.execute(data);
+                  var resultData = AppServiceData.fromJson(result);
+                  setState(() => _result = 'finished executing service process ;) -> ${resultData.progress}');
                 } on PlatformException catch (e, stacktrace) {
                   print(e);
                   print(stacktrace);
@@ -96,7 +97,6 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               child: Text('stop service'),
             ),
-
           ],
         ),
       ),
@@ -113,7 +113,8 @@ serviceMain() async {
       print('dart -> $i');
       data.progress = i;
       var result2 = await ServiceClient.update(data);
-      if (i > 50) {
+      if (i > 10) {
+        await ServiceClient.endExecution(data);
         var result = await ServiceClient.stopService();
         print(result);
       }

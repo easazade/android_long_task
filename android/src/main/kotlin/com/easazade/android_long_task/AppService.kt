@@ -19,6 +19,7 @@ class AppService : Service() {
   private var channel: MethodChannel? = null
   var serviceData: JSONObject? = null
   private var observer: ((JSONObject) -> Unit)? = null
+  private var executionResultListener: ((JSONObject) -> Unit)? = null
   private val notifId = 101
   private var engine: FlutterEngine? = null
 
@@ -28,6 +29,10 @@ class AppService : Service() {
 
   fun setServiceDataObserver(observer: (JSONObject) -> Unit) {
     this.observer = observer
+  }
+
+  fun setMethodExecutionResultListener(listener: (JSONObject) -> Unit) {
+    this.executionResultListener = listener
   }
 
   fun runDartFunction() {
@@ -53,7 +58,16 @@ class AppService : Service() {
           setData(jObject)
           result.success("set data on service")
         } catch (e: Throwable) {
-          result.success("!!! Failed to set data on service !!!")
+          result.error("CODE: FAILED SETTING DATA", "!!! Failed to set data on service !!!", "")
+          e.printStackTrace()
+        }
+      } else if (call.method == "END_EXECUTION") {
+        try {
+          val jObject = JSONObject(call.arguments as String)
+          endExecution(jObject)
+          result.success("!!! Ended execution.")
+        } catch (e: Throwable) {
+          result.error("CODE:FAILED EDNING EXECUTION", "!!! failed to end the execution", "")
           e.printStackTrace()
         }
       }
@@ -95,6 +109,20 @@ class AppService : Service() {
         val description = it.getString("notif_description")
         updateNotification(title, description)
       }
+    }
+  }
+
+  private fun endExecution(data: JSONObject?) {
+    Log.d("DART/NATIVE", "ending execution of method call")
+    Log.d("DART/NATIVE", data?.toString() ?: "result data is null")
+    serviceData = data
+    data?.let {
+      if (it.has("notif_title") && it.has("notif_description")) {
+        val title = it.getString("notif_title")
+        val description = it.getString("notif_description")
+        updateNotification(title, description)
+      }
+      executionResultListener?.invoke(it)
     }
   }
 

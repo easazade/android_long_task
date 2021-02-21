@@ -34,10 +34,12 @@ class AppClient {
     await channel.invokeMethod(_STOP_SERVICE);
   }
 
-  static Future<void> execute(ServiceData initialData) async {
+  static Future<Map<String, dynamic>> execute(ServiceData initialData) async {
     await channel.invokeMethod(_SET_SERVICE_DATA, ServiceDataWrapper(initialData).toJson());
     await channel.invokeMethod(_START_SERVICE);
-    await channel.invokeMethod(_RUN_DART_FUNCTION, "");
+    var result = await channel.invokeMethod(_RUN_DART_FUNCTION, "");
+    Map<String, dynamic> json = jsonDecode(result as String);
+    return json;
   }
 
   // static Future<void> setInitialData(ServiceData serviceData) async {
