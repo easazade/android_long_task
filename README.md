@@ -27,7 +27,7 @@ a flutter app that runs on android runs in an **Activity**. and Activity is an a
 
 **Here comes the YOU MUST KNOW PART :**
 
-Android Activities and Services do not in the same process. that is the reason why when use closes your app and your app's process gets killed by the system your code in foreground service will still run. because your flutter app code runs in an Activity which has a separate process from your Foreground Service. This behavior also means that the code that runs in an Activities and Foreground Services are running in different Environments. because of this the dart process you run in your activity is different from the dart code you run in your service. that is why we have basically to functions that runs dart code one is the **main** function which runs your app. one is **serviceMain** function which runs your dart code in your service.
+Android Activities and Services do not run in the same process. that is the reason why when user closes your app and your app's process gets killed by the system your code in foreground service will still run. because your flutter app code runs in an Activity which has a separate process from your Foreground Service. This behavior also means that the code that runs in an Activities and Foreground Services are running in different Environments (Processes). because of this the dart code you run in your activity runs differently from the dart code you run in your service. that is why we have basically 2 functions that runs dart code one is the **main** function which runs your app. the other is **serviceMain** function which runs your dart code in your service.
 
 
 ## Getting Started
@@ -39,11 +39,11 @@ if you're using `flutter_launcher_icons` to generate your app launcher icons, yo
 
 # install:
 just add plugin to your pubspec.yaml
-there is no need to fore adding native code or making changes in your `AndroidManifest.xml` file
+there is no need to for adding native code or making changes in your `AndroidManifest.xml` file
 
 ```yaml
 dependencies:
-	android_long_task: ^last_version
+  android_long_task: ^last_version
 ```
 
 ## Step 1: create Service shared data
@@ -127,12 +127,14 @@ now you can call `AppClient.execute()` from your app dart-code to start Foregrou
 import  'package:android_long_task/android_long_task.dart';
 
 //you can listen for shared data update
+//observe.listen is not good naming, I know. I'll change it in future updates.
 AppClient.observe.listen((json) {
-	var serviceData =  AppServiceData.fromJson(json);
+	var serviceDataUpdate =  AppServiceData.fromJson(json);
 	//your code
 });
 
-await AppClient.execute(initialSharedData);
+var resultJson = await AppClient.execute(initialSharedData);
+var serviceDataResult = AppServiceData.fromJson(result); 
 
 ```
 * you could also use `AppClient.getData()` to get the last data. if the ForegroundService is running it will return the last changes. if ForegroundService is stopped the initial data will be returned. if you have not called `AppClient.execute()` at all `null` will be returned
