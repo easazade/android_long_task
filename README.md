@@ -16,18 +16,21 @@ No & No & No. this is an IOS limitation and you must consider this before creati
 ![diagram](diagram.jpg?raw=true "digram")
 
 **TLDR**
-basically you should know that you should write the code you want to run in your ForegroundService in a different main function called **serviceMain**
+basically you should know that you must write the code you want to run in your ForegroundService in a different main function called **serviceMain**
 if you want to know exactly why read the rest.
 
 
 **This is why :**
-a flutter app that runs on android runs in an **Activity**. and Activity is an android OS component where all android apps run in.  in order for Android OS components to run their code they must run in  a system **Process**.  so activities run in a **Process**
+a flutter app that runs on android runs in an **Activity**. and an Activity is an android OS component where all android apps run in. in order for Android OS components to run their code they must run in  a system **Process**.  so activities run in a **Process**. 
 
-**Service** is another Android OS component that runs code in the background without showing anything to the user.  since Android OS since Android 8 will not allow Services to run for long. we have a special type of Service which is **Foreground Service**. it is a type of Service in Android OS that will not be killed by Android OS and shows a notification to the user as long as it runs. the purpose of Foreground Service is to run your code as long as you want outside the application
+**Service** is another Android OS component that runs code in the background without showing anything to the user. because Android OS since version 8 will not allow Services to run for long. we have a special type of Service which is **Foreground Service**. it is a type of Service in Android OS that will not be killed by Android OS and must shows a notification to the user as long as it runs. the purpose of Foreground Service is to run your code as long as you want outside the application.
+
+**Note**: the reason Google added this limitation to Android OS is because too many Services running in the background will slow down the device and consumes too much battery. so since Android 8 Services cannot run for long. 
+but sometimes Some apps need to run some processes in the background for long or all the time. android allows this through Foreground Services. a Background Service can become a Foreground Service if it shows a UI element to the user indicating that a it is running. this UI element must be a notification.
 
 **Here comes the YOU MUST KNOW PART :**
 
-Android Activities and Services do not run in the same process. that is the reason why when user closes your app and your app's process gets killed by the system your code in foreground service will still run. because your flutter app code runs in an Activity which has a separate process from your Foreground Service. This behavior also means that the code that runs in an Activities and Foreground Services are running in different Environments (Processes). because of this the dart code you run in your activity runs differently from the dart code you run in your service. that is why we have basically 2 functions that runs dart code one is the **main** function which runs your app. the other is **serviceMain** function which runs your dart code in your service.
+Android Activities and Services do not run in the same process. that is the reason why when user closes your app and your app's process gets killed by the system your code in foreground service will still run. because your flutter app code runs in an Activity which has a separate process from your Foreground Service. This behavior also means that the code that runs in Activities and Foreground Services are running in different Environments (Processes). because of this the dart code you run in your activity runs differently from the dart code you run in your service. that is why we have basically 2 functions that runs dart code one is the **main** function which runs your app. the other is **serviceMain** function which runs your dart code in your service. in simpler terms just imagine you are running a second app along side your app but the second app only shows a notification
 
 
 ## Getting Started
@@ -47,31 +50,31 @@ dependencies:
 ```
 
 ## Step 1: create Service shared data
-create a service data class to specify the data that is shared between your app dart-code and your service dart-code. in this class you  will add the shared data you need and also specify the ForegroundService notification's title and description
+create a service data class to specify the data that is shared between your app dart-code and your service dart-code. in this class you will add the shared data you need and also specify the ForegroundService notification's title and description
 
 ```dart
 import  'dart:convert';
 import  'package:android_long_task/android_long_task.dart';
 
-class  SharedUploadData  extends  ServiceData {
+class SharedUploadData extends ServiceData {
 
-    int progress =  0;
-
-    @override
-    String  get  notificationTitle => 'uploading';
+    int progress = 0;
 
     @override
-    String  get  notificationDescription => 'progress -> $progress';
+    String get notificationTitle => 'uploading';
 
-    String  toJson() {
-        var jsonMap = {
-            'progress': progress,
-         };
-        return  jsonEncode(jsonMap);
-     }
+    @override
+    String get notificationDescription => 'progress -> $progress';
 
-    static  AppServiceData  fromJson(Map<String, dynamic> json) {
-         return  AppServiceData()..progress = json['progress'] as  int;
+    String toJson() {
+       var jsonMap = {
+           'progress': progress,
+        };
+       return jsonEncode(jsonMap);
+    }
+
+    static AppServiceData fromJson(Map<String, dynamic> json) {
+       return AppServiceData()..progress = json['progress'] as int;
     }
 
 }
@@ -85,24 +88,25 @@ create a `serviceMain()` function in your `lib/main.dart` file. this is where yo
 //this entire function runs in your ForegroundService
 @pragma('vm:entry-point')
 serviceMain() async {
-	//make sure you add this
-	WidgetsFlutterBinding.ensureInitialized();
-	//if your use dependency injection you initialize them here
-	//what ever objects you created in your app main function is not accessible here
+  //make sure you add this
+  WidgetsFlutterBinding.ensureInitialized();
+  //if your use dependency injection you initialize them here
+  //what ever objects you created in your app main function is not  accessible here
 
-	//set a callback and define the code you want to execute when your ForegroundService runs
-	ServiceClient.setExecutionCallback((initialData) async {
-		//you set initialData when you are calling AppClient.execute()
-		//from your flutter application code and receive it here
-		var serviceData =  AppServiceData.fromJson(initialData);
-		//runs your code here
-		serviceData.progress = 20;
-		await ServiceClient.update(serviceData);
-		//run some more code
-		serviceData.progress = 100;
-		await ServiceClient.endExecution(serviceData);
-		await ServiceClient.stopService();
-	});
+  //set a callback and define the code you want to execute when your  ForegroundService runs
+  ServiceClient.setExecutionCallback((initialData) async {
+     //you set initialData when you are calling AppClient.execute()
+     //from your flutter application code and receive it here
+     var serviceData =  AppServiceData.fromJson(initialData);
+     //runs your code here
+     serviceData.progress = 20;
+     await ServiceClient.update(serviceData);
+     //run some more code
+     serviceData.progress = 100;
+     await ServiceClient.endExecution(serviceData);
+     await ServiceClient.stopService();     
+
+  });
 
 }
 ```
@@ -129,12 +133,12 @@ import  'package:android_long_task/android_long_task.dart';
 //you can listen for shared data update
 //observe.listen is not good naming, I know. I'll change it in future updates.
 AppClient.observe.listen((json) {
-	var serviceDataUpdate =  AppServiceData.fromJson(json);
-	//your code
+   var serviceDataUpdate =  AppServiceData.fromJson(json);
+   //your code
 });
 
 var resultJson = await AppClient.execute(initialSharedData);
-var serviceDataResult = AppServiceData.fromJson(result); 
+var serviceDataResult = AppServiceData.fromJson(resultJson); 
 
 ```
 * you could also use `AppClient.getData()` to get the last data. if the ForegroundService is running it will return the last changes. if ForegroundService is stopped the initial data will be returned. if you have not called `AppClient.execute()` at all `null` will be returned
@@ -144,6 +148,7 @@ var serviceDataResult = AppServiceData.fromJson(result);
 # ToDo list
 
 * add options to customize ForegroundService Notification more
+* add ability to start ForegroundService when Device Restarts/Turns On
 
 
 
