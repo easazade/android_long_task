@@ -1,6 +1,8 @@
 # android_long_task
 
-android long task is a flutter plugin to run dart code in an android foreground service with simplicity
+##### Run long running tasks in android background
+
+`android_long_task` is a flutter plugin to run dart code in an android foreground service with simplicity
 
 Does it work on IOS as well?
 
@@ -67,10 +69,10 @@ class SharedUploadData extends ServiceData {
     String get notificationDescription => 'progress -> $progress';
 
     String toJson() {
-       var jsonMap = {
+       var map = {
            'progress': progress,
-        };
-       return jsonEncode(jsonMap);
+       };
+       return jsonEncode(map);
     }
 
     static AppServiceData fromJson(Map<String, dynamic> json) {
@@ -91,8 +93,8 @@ serviceMain() async {
   //make sure you add this
   WidgetsFlutterBinding.ensureInitialized();
   //if your use dependency injection you initialize them here
-  //what ever objects you created in your app main function is not  accessible here
-
+  //what ever dart objects you created in your app main function is not  accessible here
+  
   //set a callback and define the code you want to execute when your  ForegroundService runs
   ServiceClient.setExecutionCallback((initialData) async {
      //you set initialData when you are calling AppClient.execute()
@@ -132,18 +134,21 @@ import  'package:android_long_task/android_long_task.dart';
 
 //you can listen for shared data update
 //observe.listen is not good naming, I know. I'll change it in future updates.
-AppClient.observe.listen((json) {
+AppClient.updates.listen((json) {
    var serviceDataUpdate =  AppServiceData.fromJson(json);
    //your code
 });
+
 
 var resultJson = await AppClient.execute(initialSharedData);
 var serviceDataResult = AppServiceData.fromJson(resultJson); 
 
 ```
-* you could also use `AppClient.getData()` to get the last data. if the ForegroundService is running it will return the last changes. if ForegroundService is stopped the initial data will be returned. if you have not called `AppClient.execute()` at all `null` will be returned
+- `AppClient` is the interface that allows you to communicate with ForegroundService from application side dart-code. `AppClient` methods must only be called from the application side
+- `AppClient.execute()` has a returned type of your shared-data in json which is the result of your background task and will be set from `serviceMain` by calling `ServiceClient.endExecution(serviceData)` and if you don't call it at all `AppClient.execute()` in above code will be finished and won't return anything  
+- you could also use `AppClient.getData()` to get the last data. if the ForegroundService is running it will return the last changes. if ForegroundService is stopped the initial data will be returned. if you have not called `AppClient.execute()` at all `null` will be returned
 
-* `AppCient` is the interface that allows you to communicate with ForegroundService from application side dart-code. `AppClient` methods must only be called from the application side
+
 
 # ToDo list
 

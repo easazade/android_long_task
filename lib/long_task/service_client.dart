@@ -10,9 +10,9 @@ class ServiceClient {
   static const _END_EXECUTION = 'END_EXECUTION';
   static var channel = MethodChannel(_CHANNEL_NAME);
 
-  static Future<String> update(ServiceData data) async {
+  static Future update(ServiceData data) async {
     var dataWrapper = ServiceDataWrapper(data);
-    return channel.invokeMethod(_SET_SERVICE_DATA, dataWrapper.toJson());
+    await channel.invokeMethod(_SET_SERVICE_DATA, dataWrapper.toJson());
   }
 
   static setExecutionCallback(Future action(Map<String, dynamic> initialData)) {
@@ -27,5 +27,5 @@ class ServiceClient {
     return channel.invokeMethod(_END_EXECUTION, dataWrapper.toJson());
   }
 
-  static Future<String> stopService() => channel.invokeMethod(_STOP_SERVICE);
+  static Future<String?> stopService() => channel.invokeMethod(_STOP_SERVICE) as Future<String?>;
 }

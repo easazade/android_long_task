@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({required this.title});
   final String title;
 
   @override
@@ -38,11 +38,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    AppClient.observe.listen((json) {
-      var serviceData = AppServiceData.fromJson(json);
-      setState(() {
-        _status = serviceData.notificationDescription;
-      });
+    AppClient.updates.listen((json) {
+      if (json != null) {
+        var serviceData = AppServiceData.fromJson(json);
+        setState(() {
+          _status = serviceData.notificationDescription;
+        });
+      }
     });
     super.initState();
   }
@@ -58,9 +60,10 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text('$_status', textAlign: TextAlign.center),
-            SizedBox(height: 20),
+            SizedBox(height: 6),
             Text('$_result', textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6),
-            RaisedButton(
+            SizedBox(height: 60),
+            ElevatedButton(
               onPressed: () async {
                 try {
                   var result = await AppClient.execute(data);
@@ -73,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               child: Text('run dart function'),
             ),
-            RaisedButton(
+            ElevatedButton(
               onPressed: () async {
                 try {
                   var result = await AppClient.getData();
@@ -85,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               child: Text('get service data'),
             ),
-            RaisedButton(
+            ElevatedButton(
               onPressed: () async {
                 try {
                   await AppClient.stopService();
@@ -109,12 +112,12 @@ serviceMain() async {
   WidgetsFlutterBinding.ensureInitialized();
   ServiceClient.setExecutionCallback((initialData) async {
     var serviceData = AppServiceData.fromJson(initialData);
-    for (var i = 0; i < 100; i++) {
+    for (var i = 0; i < 50; i++) {
       print('dart -> $i');
-      data.progress = i;
-      var result2 = await ServiceClient.update(data);
-      if (i > 10) {
-        await ServiceClient.endExecution(data);
+      serviceData.progress = i;
+      await ServiceClient.update(serviceData);
+      if (i > 5) {
+        await ServiceClient.endExecution(serviceData);
         var result = await ServiceClient.stopService();
         print(result);
       }
