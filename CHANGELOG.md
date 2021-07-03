@@ -1,3 +1,6 @@
+## 0.4.5
+
+updating documentation 
 ## 0.4.4
 
 migrating to null safety
