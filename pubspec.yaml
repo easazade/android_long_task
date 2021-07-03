@@ -1,6 +1,6 @@
 name: android_long_task
 description: android long task is a flutter plugin to run dart code in an android foreground service with simplicity
-version: 0.5.3
+version: 0.4.4
 homepage: https://github.com/easazade/android-long-task
 
 environment:

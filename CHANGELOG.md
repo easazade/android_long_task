@@ -1,3 +1,6 @@
+## 0.4.4
+
+migrating to null safety
 ## 0.3.3
 
 updating documentation
