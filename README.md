@@ -132,8 +132,7 @@ now you can call `AppClient.execute()` from your app dart-code to start Foregrou
 ```dart
 import  'package:android_long_task/android_long_task.dart';
 
-//you can listen for shared data update
-//observe.listen is not good naming, I know. I'll change it in future updates.
+//you can listen for shared data updates
 AppClient.updates.listen((json) {
    var serviceDataUpdate =  AppServiceData.fromJson(json);
    //your code
