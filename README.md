@@ -1,6 +1,8 @@
 # android_long_task
 
-android long task is a flutter plugin to run dart code in an android foreground service with simplicity
+##### Run long running tasks in android background
+
+`android_long_task` is a flutter plugin to run dart code in an android foreground service with simplicity
 
 Does it work on IOS as well?
 
@@ -67,10 +69,10 @@ class SharedUploadData extends ServiceData {
     String get notificationDescription => 'progress -> $progress';
 
     String toJson() {
-       var jsonMap = {
+       var map = {
            'progress': progress,
-        };
-       return jsonEncode(jsonMap);
+       };
+       return jsonEncode(map);
     }
 
     static AppServiceData fromJson(Map<String, dynamic> json) {
@@ -91,8 +93,8 @@ serviceMain() async {
   //make sure you add this
   WidgetsFlutterBinding.ensureInitialized();
   //if your use dependency injection you initialize them here
-  //what ever objects you created in your app main function is not  accessible here
-
+  //what ever dart objects you created in your app main function is not  accessible here
+  
   //set a callback and define the code you want to execute when your  ForegroundService runs
   ServiceClient.setExecutionCallback((initialData) async {
      //you set initialData when you are calling AppClient.execute()
