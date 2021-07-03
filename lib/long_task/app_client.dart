@@ -12,6 +12,7 @@ class AppClient {
   static const _STOP_SERVICE = 'STOP_SERVICE';
   static const _RUN_DART_FUNCTION = 'RUN_DART_FUNCTION';
   static const _NOTIFY_UPDATE = 'NOTIFY_UPDATE';
+  // ignore: close_sinks
   static final _serviceDataStreamController = StreamController<Map<String, dynamic>?>.broadcast();
   static final MethodChannel channel = MethodChannel(_CHANNEL_NAME)
     ..setMethodCallHandler((call) async {

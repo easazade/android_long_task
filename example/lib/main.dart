@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({required this.title});
   final String title;
 
   @override
@@ -39,10 +39,12 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     AppClient.updates.listen((json) {
-      var serviceData = AppServiceData.fromJson(json);
-      setState(() {
-        _status = serviceData.notificationDescription;
-      });
+      if (json != null) {
+        var serviceData = AppServiceData.fromJson(json);
+        setState(() {
+          _status = serviceData.notificationDescription;
+        });
+      }
     });
     super.initState();
   }
@@ -110,11 +112,11 @@ serviceMain() async {
   WidgetsFlutterBinding.ensureInitialized();
   ServiceClient.setExecutionCallback((initialData) async {
     var serviceData = AppServiceData.fromJson(initialData);
-    for (var i = 0; i < 100; i++) {
+    for (var i = 0; i < 50; i++) {
       print('dart -> $i');
       serviceData.progress = i;
-      var result2 = await ServiceClient.update(serviceData);
-      if (i > 10) {
+      await ServiceClient.update(serviceData);
+      if (i > 5) {
         await ServiceClient.endExecution(serviceData);
         var result = await ServiceClient.stopService();
         print(result);
