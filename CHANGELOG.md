@@ -1,3 +1,6 @@
+## 0.4.6
+
+fixing a bug
 ## 0.4.5
 
 updating documentation 
