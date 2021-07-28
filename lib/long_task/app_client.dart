@@ -13,7 +13,8 @@ class AppClient {
   static const _RUN_DART_FUNCTION = 'RUN_DART_FUNCTION';
   static const _NOTIFY_UPDATE = 'NOTIFY_UPDATE';
   // ignore: close_sinks
-  static final _serviceDataStreamController = StreamController<Map<String, dynamic>?>.broadcast();
+  static final _serviceDataStreamController =
+      StreamController<Map<String, dynamic>?>.broadcast();
   static final MethodChannel channel = MethodChannel(_CHANNEL_NAME)
     ..setMethodCallHandler((call) async {
       if (call.method == _NOTIFY_UPDATE) {
@@ -36,7 +37,8 @@ class AppClient {
   }
 
   static Future<Map<String, dynamic>> execute(ServiceData initialData) async {
-    await channel.invokeMethod(_SET_SERVICE_DATA, ServiceDataWrapper(initialData).toJson());
+    await channel.invokeMethod(
+        _SET_SERVICE_DATA, ServiceDataWrapper(initialData).toJson());
     await channel.invokeMethod(_START_SERVICE);
     var result = await channel.invokeMethod(_RUN_DART_FUNCTION, "");
     Map<String, dynamic> json = jsonDecode(result as String);
@@ -46,6 +48,7 @@ class AppClient {
   static Future<Map<String, dynamic>?> getData() async {
     var stringData = await channel.invokeMethod(_GET_SERVICE_DATA) as String?;
     if (stringData == null) return null;
+    if (stringData.toLowerCase() == 'null') return null;
     Map<String, dynamic> json = jsonDecode(stringData);
     return json;
   }
