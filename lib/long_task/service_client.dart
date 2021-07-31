@@ -27,5 +27,5 @@ class ServiceClient {
     return channel.invokeMethod(_END_EXECUTION, dataWrapper.toJson());
   }
 
-  static Future<String?> stopService() => channel.invokeMethod(_STOP_SERVICE) as Future<String?>;
+  static Future<String?> stopService() => channel.invokeMethod<String?>(_STOP_SERVICE);
 }
