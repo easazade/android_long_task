@@ -25,14 +25,14 @@ if you want to know exactly why read the rest.
 **This is why :**
 a flutter app that runs on android runs in an **Activity**. and an Activity is an android OS component where all android apps run in. in order for Android OS components to run their code they must run in  a system **Process**.  so activities run in a **Process**. 
 
-**Service** is another Android OS component that runs code in the background without showing anything to the user. because Android OS since version 8 will not allow Services to run for long. we have a special type of Service which is **Foreground Service**. it is a type of Service in Android OS that will not be killed by Android OS and must shows a notification to the user as long as it runs. the purpose of Foreground Service is to run your code as long as you want outside the application.
+**Service** is another Android OS component that runs code in the background without showing anything to the user. because Android OS since version 8 will not allow Services to run for long. we have a special type of Service which is **Foreground Service**. it is a type of Service in Android OS that will not be killed by Android OS and must show a notification to the user as long as it runs. the purpose of Foreground Service is to run your code as long as you want outside the application.
 
 **Note**: the reason Google added this limitation to Android OS is because too many Services running in the background will slow down the device and consumes too much battery. so since Android 8 Services cannot run for long. 
 but sometimes Some apps need to run some processes in the background for long or all the time. android allows this through Foreground Services. a Background Service can become a Foreground Service if it shows a UI element to the user indicating that a it is running. this UI element must be a notification.
 
 **Here comes the YOU MUST KNOW PART :**
 
-Android Activities and Services do not run in the same process. that is the reason why when user closes your app and your app's process gets killed by the system your code in foreground service will still run. because your flutter app code runs in an Activity which has a separate process from your Foreground Service. This behavior also means that the code that runs in Activities and Foreground Services are running in different Environments (Processes). because of this the dart code you run in your activity runs differently from the dart code you run in your service. that is why we have basically 2 functions that runs dart code one is the **main** function which runs your app. the other is **serviceMain** function which runs your dart code in your service. in simpler terms just imagine you are running a second app along side your app but the second app only shows a notification
+Android Activities and Services do not run in the same process. that is the reason why when user closes your app and your app's process gets killed by the system, your code in foreground service will still run. because your flutter app code runs in an Activity which has a separate process from your Foreground Service. This behavior also means that the code that runs in Activities and Foreground Services are running in different Environments (Processes). because of this the dart code you run in your activity runs differently from the dart code you run in your service. that is why we have basically 2 functions that runs dart code one is the **main** function which runs your app. the other is **serviceMain** function which runs your dart code in your service. in simpler terms just imagine you are running a second app along side your app, but the second app only shows a notification
 
 
 ## Getting Started
@@ -114,10 +114,12 @@ serviceMain() async {
 ```
 
 **What is ServiceClient**
-service client is basically an interface to your ForegroundService. it providers methods like
-* `update(sharedData)` which is used to update the shared data between you app dart-code and service-dart code.
 
-* `endExecution(sharedData)` will end the execution of the call that was invoked when `AppClient.execute()` was called from application side and sends shared data as the return value of `AppClient.execute()`
+service client is basically an interface to your ForegroundService. it providers methods like
+* `update(sharedData)` which is used to update the shared data between your app's dart-code and your service's dart-code.
+
+* `endExecution(sharedData)` will end the execution of the call that was invoked from application side and started the service. 
+`AppClient.execute()` is the function that should be called from application side when you want to start the service. the shared data argument you give to `ServiceClient.endExecution(sharedData)`function will be return type of `AppClient.execute()` that was called from application side.
 
 * `stopService()` which stops the service. note that you don't have to stop the ForegroundService if that is what you need.
 
