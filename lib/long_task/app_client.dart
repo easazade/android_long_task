@@ -44,7 +44,7 @@ class AppClient {
   }
 
   static Future<Map<String, dynamic>?> getData() async {
-    var stringData = await channel.invokeMethod(_GET_SERVICE_DATA) as String?;
+    String? stringData = await channel.invokeMethod<String?>(_GET_SERVICE_DATA);
     if (stringData == null) return null;
     if (stringData.toLowerCase() == 'null') return null;
     Map<String, dynamic> json = jsonDecode(stringData);
