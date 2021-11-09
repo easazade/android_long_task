@@ -61,14 +61,17 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             Text('$_status', textAlign: TextAlign.center),
             SizedBox(height: 6),
-            Text('$_result', textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6),
+            Text('$_result',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headline6),
             SizedBox(height: 60),
             ElevatedButton(
               onPressed: () async {
                 try {
                   var result = await AppClient.execute(data);
                   var resultData = AppServiceData.fromJson(result);
-                  setState(() => _result = 'finished executing service process ;) -> ${resultData.progress}');
+                  setState(() => _result =
+                      'finished executing service process ;) -> ${resultData.progress}');
                 } on PlatformException catch (e, stacktrace) {
                   print(e);
                   print(stacktrace);
@@ -107,6 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
+@pragma('vm:entry-point')
 serviceMain() async {
   // print(arg);
   WidgetsFlutterBinding.ensureInitialized();
