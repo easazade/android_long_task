@@ -4,6 +4,12 @@ import 'dart:convert';
 import 'package:android_long_task/long_task/service_data.dart';
 import 'package:flutter/services.dart';
 
+/// This is the interface you can use everywhere in your application to communicate with foreground-service from
+/// application side. like start the service, stop it, listen for [ServiceData] updates etc.
+/// 
+/// note that you cannot use class inside `serviceMain` function inside `lib/main.dart` since that is the function that runs 
+/// inside foreground-service. to controll the foreground-service from service side meaning inside `serviceMain` 
+/// function use [ServiceClient] class
 class AppClient {
   static const _CHANNEL_NAME = 'FSE_APP_CHANNEL_NAME';
   static const _START_SERVICE = 'START_SERVICE';
@@ -27,14 +33,13 @@ class AppClient {
       }
     });
 
-  // static Future<void> startService() async {
-  //   await channel.invokeMethod(_START_SERVICE);
-  // }
-
+  /// orders foreground-service to stop
   static Future<void> stopService() async {
     await channel.invokeMethod(_STOP_SERVICE);
   }
 
+  /// start the foreground-service and runs the code you wrote in `serviceMain` function in `lib/main.dart`
+  /// and passes the [initialData] as the argument that is received in the execution callback you set in [ServiceClient]
   static Future<Map<String, dynamic>> execute(ServiceData initialData) async {
     await channel.invokeMethod(_SET_SERVICE_DATA, ServiceDataWrapper(initialData).toJson());
     await channel.invokeMethod(_START_SERVICE);
@@ -43,6 +48,7 @@ class AppClient {
     return json;
   }
 
+  /// returns the current [ServiceData] object from foreground-service 
   static Future<Map<String, dynamic>?> getData() async {
     String? stringData = await channel.invokeMethod<String?>(_GET_SERVICE_DATA);
     if (stringData == null) return null;
@@ -51,6 +57,7 @@ class AppClient {
     return json;
   }
 
+  /// listen for [ServiceData] updates from foreground service
   static Stream<Map<String, dynamic>?> get updates {
     try {
       //dirty fix
