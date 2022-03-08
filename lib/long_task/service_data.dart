@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 /// [ServiceData] is the shared data that is passed around between foreground-service and application
-/// it basically acts as both argument and result. 
-/// 
+/// it basically acts as both argument and result.
+///
 /// you create an implementation of [ServiceData] that you need then you pass it around between foreground-service
 /// and application. this how foreground-service and application communicate to each other
 abstract class ServiceData {

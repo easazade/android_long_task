@@ -36,8 +36,8 @@ class ServiceClient {
 
   /// ends the execution of the foreground-service and return the [data] given to the application side as the result
   /// which will be received by application and passed as the return type of `AppClient.execute()` method that was
-  /// called from application side. 
-  /// 
+  /// called from application side.
+  ///
   /// in other words that `AppClient.execute()` starts the foreground-service and with
   /// `ServiceClient.endExcution(serviceData)` we can end the execution of foreground-service and also return a [ServiceData]
   /// object as a result to application side
@@ -47,5 +47,6 @@ class ServiceClient {
   }
 
   /// stops service immediatly
-  static Future<String?> stopService() => channel.invokeMethod<String?>(_STOP_SERVICE);
+  static Future<String?> stopService() =>
+      channel.invokeMethod<String?>(_STOP_SERVICE);
 }

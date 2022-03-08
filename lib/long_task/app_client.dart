@@ -6,9 +6,9 @@ import 'package:flutter/services.dart';
 
 /// This is the interface you can use everywhere in your application to communicate with foreground-service from
 /// application side. like start the service, stop it, listen for [ServiceData] updates etc.
-/// 
-/// note that you cannot use class inside `serviceMain` function inside `lib/main.dart` since that is the function that runs 
-/// inside foreground-service. to controll the foreground-service from service side meaning inside `serviceMain` 
+///
+/// note that you cannot use class inside `serviceMain` function inside `lib/main.dart` since that is the function that runs
+/// inside foreground-service. to controll the foreground-service from service side meaning inside `serviceMain`
 /// function use [ServiceClient] class
 class AppClient {
   static const _CHANNEL_NAME = 'FSE_APP_CHANNEL_NAME';
@@ -19,7 +19,8 @@ class AppClient {
   static const _RUN_DART_FUNCTION = 'RUN_DART_FUNCTION';
   static const _NOTIFY_UPDATE = 'NOTIFY_UPDATE';
   // ignore: close_sinks
-  static final _serviceDataStreamController = StreamController<Map<String, dynamic>?>.broadcast();
+  static final _serviceDataStreamController =
+      StreamController<Map<String, dynamic>?>.broadcast();
   static final MethodChannel channel = MethodChannel(_CHANNEL_NAME)
     ..setMethodCallHandler((call) async {
       if (call.method == _NOTIFY_UPDATE) {
@@ -41,14 +42,15 @@ class AppClient {
   /// start the foreground-service and runs the code you wrote in `serviceMain` function in `lib/main.dart`
   /// and passes the [initialData] as the argument that is received in the execution callback you set in [ServiceClient]
   static Future<Map<String, dynamic>> execute(ServiceData initialData) async {
-    await channel.invokeMethod(_SET_SERVICE_DATA, ServiceDataWrapper(initialData).toJson());
+    await channel.invokeMethod(
+        _SET_SERVICE_DATA, ServiceDataWrapper(initialData).toJson());
     await channel.invokeMethod(_START_SERVICE);
     var result = await channel.invokeMethod(_RUN_DART_FUNCTION, "");
     Map<String, dynamic> json = jsonDecode(result as String);
     return json;
   }
 
-  /// returns the current [ServiceData] object from foreground-service 
+  /// returns the current [ServiceData] object from foreground-service
   static Future<Map<String, dynamic>?> getData() async {
     String? stringData = await channel.invokeMethod<String?>(_GET_SERVICE_DATA);
     if (stringData == null) return null;
