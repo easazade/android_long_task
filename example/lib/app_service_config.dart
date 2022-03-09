@@ -5,6 +5,7 @@ import 'package:android_long_task/android_long_task.dart';
 class AppServiceData extends ServiceData {
   int progress = -1;
 
+  @override
   String toJson() {
     var jsonMap = {
       'progress': progress,

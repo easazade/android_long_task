@@ -1,16 +1,39 @@
+// ignore_for_file: avoid_print
+
 import 'package:android_long_task/android_long_task.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'app_service_config.dart';
 
+@pragma('vm:entry-point')
+Future<void> serviceMain() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  ServiceClient.setExecutionCallback((initialData) async {
+    var serviceData = AppServiceData.fromJson(initialData);
+    for (var i = 0; i < 50; i++) {
+      print('dart -> $i');
+      serviceData.progress = i;
+      await ServiceClient.update(serviceData);
+      if (i > 5) {
+        await ServiceClient.endExecution(serviceData);
+        var result = await ServiceClient.stopService();
+        print(result);
+      }
+      await Future.delayed(const Duration(seconds: 1));
+    }
+  });
+}
+
 AppServiceData data = AppServiceData();
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -19,13 +42,13 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'android long task example'),
+      home: const MyHomePage(title: 'android long task example'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({required this.title});
+  const MyHomePage({Key? key, required this.title}) : super(key: key);
   final String title;
 
   @override
@@ -59,12 +82,12 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('$_status', textAlign: TextAlign.center),
-            SizedBox(height: 6),
-            Text('$_result',
+            Text(_status, textAlign: TextAlign.center),
+            const SizedBox(height: 6),
+            Text(_result,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headline6),
-            SizedBox(height: 60),
+            const SizedBox(height: 60),
             ElevatedButton(
               onPressed: () async {
                 try {
@@ -89,7 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   print(stacktrace);
                 }
               },
-              child: Text('get service data'),
+              child: const Text('get service data'),
             ),
             ElevatedButton(
               onPressed: () async {
@@ -101,31 +124,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   print(stacktrace);
                 }
               },
-              child: Text('stop service'),
+              child: const Text('stop service'),
             ),
           ],
         ),
       ),
     );
   }
-}
-
-@pragma('vm:entry-point')
-serviceMain() async {
-  // print(arg);
-  WidgetsFlutterBinding.ensureInitialized();
-  ServiceClient.setExecutionCallback((initialData) async {
-    var serviceData = AppServiceData.fromJson(initialData);
-    for (var i = 0; i < 50; i++) {
-      print('dart -> $i');
-      serviceData.progress = i;
-      await ServiceClient.update(serviceData);
-      if (i > 5) {
-        await ServiceClient.endExecution(serviceData);
-        var result = await ServiceClient.stopService();
-        print(result);
-      }
-      await Future.delayed(const Duration(seconds: 1));
-    }
-  });
 }

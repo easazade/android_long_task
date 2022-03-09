@@ -1,6 +1,6 @@
-# android_long_task_example
+# example
 
-Demonstrates how to use the android_long_task plugin.
+A new Flutter project.
 
 ## Getting Started
 
