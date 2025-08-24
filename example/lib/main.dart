@@ -86,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
             const SizedBox(height: 6),
             Text(_result,
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headline6),
+                style: Theme.of(context).textTheme.bodyMedium),
             const SizedBox(height: 60),
             ElevatedButton(
               onPressed: () async {

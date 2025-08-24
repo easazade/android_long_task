@@ -1,15 +1,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.easazade.android_long_task">
+          package="com.easazade.android_long_task">
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
-  <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-  <application>
+    <application>
 
-    <service
-        android:name=".AppService"
-        android:enabled="true"
-        android:exported="false"
-        android:foregroundServiceType="connectedDevice|dataSync|location|mediaPlayback|mediaProjection|phoneCall" />
-  </application>
+        <service
+            android:name=".AppService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="connectedDevice|dataSync|location|mediaPlayback|mediaProjection|phoneCall" />
+    </application>
 
 </manifest>
